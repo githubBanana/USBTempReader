@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.xs.mpandroidchardemo.MainActivity">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:onClick="myTouch"
+            android:text="温度"/>
+        <TextView
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="10dp"
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="时间"/>
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:layout_marginLeft="35dp"
+            android:layout_marginTop="10dp"
+            android:paddingBottom="26dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/chart1" />
+
+
+
+</RelativeLayout>
