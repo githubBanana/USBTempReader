@@ -43,11 +43,13 @@
             android:orientation="vertical"
             android:gravity="center">
             <ImageView
+                android:id="@+id/user"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:padding="5dp"
                 android:src="@mipmap/ic_head_default" />
         <TextView
+            android:id="@+id/tt"
             android:layout_below="@+id/iv_bg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

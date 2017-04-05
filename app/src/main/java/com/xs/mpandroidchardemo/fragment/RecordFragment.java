@@ -1,5 +1,6 @@
 package com.xs.mpandroidchardemo.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -7,9 +8,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.formatter.IFillFormatter;
 import com.kennyc.view.MultiStateView;
+import com.xs.mpandroidchardemo.ChartActivity;
 import com.xs.mpandroidchardemo.R;
 import com.xs.mpandroidchardemo.adapter.RecordAdapter;
 import com.xs.mpandroidchardemo.entity.RecordBean;
@@ -22,6 +26,7 @@ import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 import com.yanzhenjie.recyclerview.swipe.touch.OnItemMoveListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.Bind;
@@ -36,6 +41,8 @@ public class RecordFragment extends Fragment {
     SwipeMenuRecyclerView recyclerView;
     @Bind(R.id.multi_state_view)
     MultiStateView multiStateView;
+    @Bind(R.id.tv_day)
+    TextView tvDay;
 
     private RecordAdapter recordAdapter;
 
@@ -49,6 +56,8 @@ public class RecordFragment extends Fragment {
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this,view);
+        String day = Calendar.getInstance().DATE+"";
+        tvDay.setText(day.length() == 1 ? "0"+day : day);
         recyclerView.setSwipeMenuCreator(new SwipeMenuCreator() {
             @Override
             public void onCreateMenu(SwipeMenu swipeLeftMenu, SwipeMenu swipeRightMenu, int viewType) {
@@ -85,10 +94,11 @@ public class RecordFragment extends Fragment {
         recordAdapter.setOnItemClickListener(new RecordAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(RecordBean item, int position) {
-                Toast.makeText(getContext(),""+position,Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), ChartActivity.class);
+                getActivity().startActivity(intent);
             }
         });
 
-        multiStateView.setViewState(MultiStateView.VIEW_STATE_EMPTY);
+//        multiStateView.setViewState(MultiStateView.VIEW_STATE_EMPTY);
     }
 }

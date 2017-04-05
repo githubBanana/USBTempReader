@@ -6,70 +6,97 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.xs.mpandroidchardemo.R;
 
-
 /**
- * Created by siushen on 2016/3/6.
+ * @Description
+ * @Author xs.lin
+ * @Date 2017/4/5 17:44
  */
-public class SpeedPointer extends View implements Runnable {
-    private Context mContext;
-    private Bitmap auto_wheel;
-    private int         wheel_width;
-    private int         wheel_height;
-    private int         fatherView_width,fatherView_height;
-    private Paint paint;
-    private Paint speedPoint_paint;
-    private int         goleSpeed = 0;
-    private int         speed_progress = 0;
-    private boolean     control_threadDie;
-    public void setSpeed(int speed) {
-        goleSpeed = speed;
-    }
 
-    private OnListenSpeed mOnListenSpeed;
+public class SpeedPointer extends View implements Runnable {
+
+    private Context context;
+    private int fatherViewWidth,fatherViewHeight;
+    private int wheelWidth,wheelHeight;
+    private Bitmap wheel;
+    private Paint pointPaint,timeTextPaint,tempTextPaint;
+    private static float ANGLE = 360 / 14;//每摄氏度所占的角度
+    private float dAngleValue;//角度值总变化量
+    private float previewValue;//前一次的温度值
+    private static boolean isNotContinueThread = false;
+    private String realTimeTempValue;
+
     public SpeedPointer(Context context) {
         super(context);
-        mContext = context;
+        this.context = context;
         init();
     }
 
     public SpeedPointer(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mContext = context;
+        this.context = context;
         init();
     }
 
     private void init() {
-        BitmapDrawable bmpDraw = (BitmapDrawable) getResources()
-                .getDrawable(R.mipmap.redpointer);
-        auto_wheel = bmpDraw.getBitmap();
-        wheel_width = auto_wheel.getWidth();
-        wheel_height = auto_wheel.getHeight();
+        timeTextPaint = new Paint();
+        timeTextPaint.setColor(getResources().getColor(android.R.color.darker_gray));
+        timeTextPaint.setStrokeWidth(10f);
+        timeTextPaint.setTextSize(50f);
 
-        paint = new Paint();
-        paint.setColor(0xff9dd9d7);
-        paint.setStrokeWidth(10f);
-        speedPoint_paint  = new Paint(Paint.ANTI_ALIAS_FLAG);
-        speedPoint_paint.setAntiAlias(true);
-        new Thread(this).start();
+        tempTextPaint = new Paint();
+        tempTextPaint.setColor(0xff9dd9d7);
+        tempTextPaint.setStrokeWidth(20f);
+        tempTextPaint.setTextSize(80f);
+
+        pointPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        pointPaint.setAntiAlias(true);
+
+        BitmapDrawable bmpDrawable = (BitmapDrawable) getResources().getDrawable(R.mipmap.ic_pointer);
+        wheel = bmpDrawable.getBitmap();
+        wheelWidth = wheel.getWidth();
+        wheelHeight = wheel.getHeight();
+        wheel = Bitmap.createScaledBitmap(wheel,(int) (wheelWidth * 0.93f), (int) (wheelHeight * 0.93f), false);
+
+        previewValue = 37.0f;
+//        setValueInit();//默认指针定位到32摄氏度
+//        new Thread(this).start();
+    }
+
+    public void setValueInit() {
+        dAngleValue = (32 - previewValue) * ANGLE;
+        postView();
+        previewValue = 32;
+    }
+
+    public void setValue(float value) {
+        realTimeTempValue = String.valueOf(value)+"℃";
+        dAngleValue = (value - previewValue) * ANGLE;
+        postView();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        fatherView_width = getWidth();
-        fatherView_height = getHeight();
-        auto_wheel = Bitmap.createScaledBitmap(auto_wheel, (int) (fatherView_width * 0.86f), (int) (wheel_height * 1.15f), false);
-        canvas.rotate(speed_progress*0.01f, fatherView_height / 2, fatherView_width / 2);
-        canvas.drawBitmap(auto_wheel, fatherView_width * 0.075f, fatherView_height * 0.45f, speedPoint_paint);
-        if (mOnListenSpeed != null)
-        mOnListenSpeed.speedCallBack(speed_progress);
+        fatherViewWidth = getWidth();
+        fatherViewHeight = getHeight();
+        canvas.rotate(dAngleValue,fatherViewWidth / 2,fatherViewHeight / 2);
+        canvas.drawBitmap(wheel, fatherViewWidth * 0.188f, fatherViewHeight * 0.14f, pointPaint);
+        canvas.drawText("2102-22-33 11:22",fatherViewWidth / 2 * 0.6f,fatherViewHeight / 2 * 0.8f,timeTextPaint);
+        canvas.drawText("33.3℃",fatherViewWidth / 2 * 0.8f,fatherViewHeight / 2 * 1.1f,tempTextPaint);
     }
 
-    private void postSpeedView() {
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        isNotContinueThread = true;
+    }
+
+    private void postView() {
         post(new Runnable() {
             @Override
             public void run() {
@@ -78,50 +105,37 @@ public class SpeedPointer extends View implements Runnable {
         });
     }
 
-    /**
-     * 实时调动指针指向的线程
-     */
-    public void run() {
-        while (true) {
-                if(control_threadDie)
-                    break;
-            try {
-                Thread.sleep(5);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            if(speed_progress < goleSpeed) {
-                    if((goleSpeed - speed_progress) < 1) {
-                        speed_progress = goleSpeed;
-                    }else {
-                        speed_progress = speed_progress + 10;
-                    }
-                    postSpeedView();
-            } else if(speed_progress > goleSpeed) {
-                if((speed_progress - goleSpeed) < 1)
-                    speed_progress = goleSpeed;
-                else
-                    speed_progress = speed_progress - 10;
-                postSpeedView();
-            } else {}
-
-        }
-    }
-    public void setOnlistenSpeed(Context context) {
-        mOnListenSpeed = (OnListenSpeed) context;
-    }
-
-    /**
-     * 转速值回调
-     */
-    public interface OnListenSpeed {
-        void speedCallBack(int speed);
-    }
-
     @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        control_threadDie = true;
+    public void run() {
+
     }
+/*
+    @Override
+    public void run() {
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        while (true) {
+
+            if (isNotContinueThread)
+                break;
+            if (dAngleValue !=  0) {
+                dnAngle = dAngleValue / 10;
+                for (int i = 0; i < 10; i++) {
+                    try {
+                        Thread.sleep(5);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    postView();
+                }
+                dnAngle = 0;
+                dAngleValue = 0;
+            }
+        }
+    }*/
+
 
 }
