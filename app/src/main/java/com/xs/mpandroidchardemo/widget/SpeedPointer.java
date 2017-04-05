@@ -1,4 +1,4 @@
-package com.xs.mpandroidchardemo;
+package com.xs.mpandroidchardemo.widget;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -7,6 +7,8 @@ import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.view.View;
+
+import com.xs.mpandroidchardemo.R;
 
 
 /**
@@ -42,7 +44,7 @@ public class SpeedPointer extends View implements Runnable {
 
     private void init() {
         BitmapDrawable bmpDraw = (BitmapDrawable) getResources()
-                .getDrawable(R.mipmap.tp_choose);
+                .getDrawable(R.mipmap.redpointer);
         auto_wheel = bmpDraw.getBitmap();
         wheel_width = auto_wheel.getWidth();
         wheel_height = auto_wheel.getHeight();

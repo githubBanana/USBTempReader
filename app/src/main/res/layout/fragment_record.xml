@@ -24,8 +24,58 @@
             android:layout_gravity="center"
             android:textColor="@android:color/white"
             android:textSize="20sp"
+            android:drawableLeft="@drawable/ic_timeline_white"
+            android:drawablePadding="5dp"
             android:text="历史记录"
             />
 
     </android.support.v7.widget.Toolbar>
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_margin="@dimen/activity_horizontal_margin">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:layout_centerVertical="true"
+            android:text="日期"/>
+        <ImageView
+            android:id="@+id/iv_calendar"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_calendar_50dp"
+            android:layout_alignParentRight="true"/>
+        <TextView
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="18dp"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="15"/>
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"/>
+
+    <com.kennyc.view.MultiStateView
+        android:layout_width="match_parent"
+        android:id="@+id/multi_state_view"
+        android:layout_height="match_parent"
+        app:msv_viewState="content"
+        app:msv_emptyView="@layout/layout_state_empty_view"
+        >
+        <com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </com.kennyc.view.MultiStateView>
+
+
+
 </LinearLayout>

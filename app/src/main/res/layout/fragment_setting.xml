@@ -25,6 +25,7 @@
             android:textColor="@android:color/white"
             android:textSize="20sp"
             android:text="设置"
+            android:drawablePadding="5dp"
             android:drawableLeft="@drawable/ic_setting_24dp"
             />
 
@@ -45,6 +46,7 @@
             android:layout_height="wrap_content"
             android:text="创建新用户"
             android:layout_centerVertical="true"
+            android:textSize="16sp"
             android:padding="5dp"/>
         <ImageView
             android:layout_centerVertical="true"
@@ -70,14 +72,26 @@
                 android:layout_height="wrap_content"
                 android:text="连接设备"
                 android:layout_centerVertical="true"
+                android:textSize="16sp"
                 android:padding="5dp"/>
-            <ImageView
-                android:layout_centerVertical="true"
+            <com.kyleduo.switchbutton.SwitchButton
+                android:id="@+id/sb_conn"
+                style="@style/SwitchButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                app:kswAnimationDuration="300"
+                app:kswBackDrawable="@drawable/ios_back_drawable"
+                app:kswBackMeasureRatio="1.4"
+                app:kswThumbDrawable="@drawable/ios_thumb_selector"
+                app:kswTextOn=" | "
+                app:kswThumbMarginLeft="-5dp"
+                app:kswThumbMarginRight="-5dp"
+                app:kswThumbMarginBottom="-8dp"
+                app:kswThumbMarginTop="-2.5dp"
+                android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="5dp"
-                android:src="@drawable/ic_next_right_green_24dp"/>
+                android:layout_marginRight="5dp"/>
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 
@@ -96,14 +110,27 @@
                 android:layout_height="wrap_content"
                 android:text="温度单位"
                 android:layout_centerVertical="true"
+                android:textSize="16sp"
                 android:padding="5dp"/>
-            <ImageView
-                android:layout_centerVertical="true"
+            <com.kyleduo.switchbutton.SwitchButton
+                android:id="@+id/sb_unit"
+                style="@style/SwitchButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                app:kswAnimationDuration="300"
+                app:kswBackDrawable="@drawable/ios_back_drawable"
+                app:kswBackMeasureRatio="1.4"
+                app:kswThumbDrawable="@drawable/ios_thumb_selector"
+                app:kswTextOff="℉"
+                app:kswTextOn="℃"
+                app:kswThumbMarginLeft="-5dp"
+                app:kswThumbMarginRight="-5dp"
+                app:kswThumbMarginBottom="-8dp"
+                app:kswThumbMarginTop="-2.5dp"
+                android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="5dp"
-                android:src="@drawable/ic_next_right_green_24dp"/>
+                android:layout_marginRight="5dp"/>
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 
@@ -122,26 +149,68 @@
                 android:layout_height="wrap_content"
                 android:text="警报提示"
                 android:layout_centerVertical="true"
+                android:textSize="16sp"
                 android:padding="5dp"/>
-            <ImageView
-                android:layout_centerVertical="true"
+            <com.kyleduo.switchbutton.SwitchButton
+                android:id="@+id/sb_tip"
+                style="@style/SwitchButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                app:kswAnimationDuration="300"
+                app:kswBackDrawable="@drawable/ios_back_drawable"
+                app:kswBackMeasureRatio="1.4"
+                app:kswThumbDrawable="@drawable/ios_thumb_selector"
+                app:kswTextOn=" | "
+                app:kswThumbMarginLeft="-5dp"
+                app:kswThumbMarginRight="-5dp"
+                app:kswThumbMarginBottom="-8dp"
+                app:kswThumbMarginTop="-2.5dp"
+                android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="5dp"
-                android:src="@drawable/ic_next_right_green_24dp"/>
+                android:layout_marginRight="5dp"/>
         </RelativeLayout>
     </android.support.v7.widget.CardView>
-
-    <com.kyleduo.switchbutton.SwitchButton
-        android:id="@+id/sb_text"
-        style="@style/SwitchButtonStyle"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/ll_tip"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
-        android:textSize="16dp"
-        app:kswTextOff="Off"
-        app:kswTextOn="On"
-        />
+        android:layout_marginTop="5dp"
+        android:orientation="vertical">
+        <TextView
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="报警温度"
+            android:gravity="center_vertical"
+            android:textSize="14sp"
+            android:background="?attr/selectableItemBackground"
+            android:drawableRight="@drawable/ic_next_right_grey_24dp"/>
+        <TextView
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="报警间隔"
+            android:gravity="center_vertical"
+            android:textSize="14sp"
+            android:background="?attr/selectableItemBackground"
+            android:drawableRight="@drawable/ic_next_right_grey_24dp"/>
+        <TextView
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="报警铃声"
+            android:gravity="center_vertical"
+            android:textSize="14sp"
+            android:background="?attr/selectableItemBackground"
+            android:drawableRight="@drawable/ic_next_right_grey_24dp"/>
+    </LinearLayout>
+
 
 </LinearLayout>

@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -24,8 +25,87 @@
             android:layout_gravity="center"
             android:textColor="@android:color/white"
             android:textSize="20sp"
+            android:drawableLeft="@drawable/ic_cached_white_24dp"
+            android:drawablePadding="5dp"
             android:text="当前状态"
             />
 
     </android.support.v7.widget.Toolbar>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:padding="30dp">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:padding="5dp"
+                android:src="@mipmap/ic_head_default" />
+        <TextView
+            android:layout_below="@+id/iv_bg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimary"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:text="用户名"/>
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_watcher"
+            android:layout_toLeftOf="@+id/view_line"
+            android:layout_alignBaseline="@+id/ic_phone"
+            android:layout_marginTop="40dp"
+            android:layout_marginRight="10dp"/>
+        <View
+            android:id="@+id/view_line"
+            android:layout_width="80dp"
+            android:layout_height="1dp"
+            android:layout_toLeftOf="@+id/ic_phone"
+            android:layout_alignBaseline="@+id/ic_phone"
+            android:layout_marginTop="50dp"
+            android:layout_marginRight="10dp"
+            android:background="@color/colorPrimary"/>
+        <ImageView
+            android:id="@+id/ic_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="40dp"
+            android:src="@mipmap/ic_phone"
+            />
+        <TextView
+            android:layout_below="@+id/view_line"
+            android:layout_toLeftOf="@+id/ic_phone"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="未连接"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/train_centerbgid"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:background="@mipmap/train_centerbg">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_pointer"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            />
+        <com.xs.mpandroidchardemo.widget.SpeedPointer
+            android:id="@+id/pointer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </RelativeLayout>
 </LinearLayout>

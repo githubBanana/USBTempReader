@@ -13,7 +13,7 @@
         android:layout_marginTop="20dp"
         android:background="@mipmap/train_centerbg">
 
-        <com.xs.mpandroidchardemo.SpeedPointer
+        <com.xs.mpandroidchardemo.widget.SpeedPointer
             android:id="@+id/pointer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>

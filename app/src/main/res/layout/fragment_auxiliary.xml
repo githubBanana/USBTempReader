@@ -24,8 +24,100 @@
             android:layout_gravity="center"
             android:textColor="@android:color/white"
             android:textSize="20sp"
+            android:drawablePadding="5dp"
             android:text="辅助功能"
+            android:drawableLeft="@drawable/ic_data_usage_white_24dp"
             />
-
     </android.support.v7.widget.Toolbar>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:clickable="true"
+        android:background="?attr/selectableItemBackground">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="手机APP下载"
+                android:drawableRight="@drawable/ic_next_right_grey_24dp"
+                android:gravity="center_vertical"
+                android:layout_centerVertical="true"
+                android:textSize="16sp"
+                android:padding="5dp"/>
+    </android.support.v7.widget.CardView>
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:clickable="true"
+        android:background="?attr/selectableItemBackground">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="DT101使用指南"
+            android:drawableRight="@drawable/ic_next_right_grey_24dp"
+            android:gravity="center_vertical"
+            android:layout_centerVertical="true"
+            android:textSize="16sp"
+            android:padding="5dp"/>
+    </android.support.v7.widget.CardView>
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:clickable="true"
+        android:background="?attr/selectableItemBackground">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="贴心记录"
+            android:drawableRight="@drawable/ic_next_right_grey_24dp"
+            android:gravity="center_vertical"
+            android:layout_centerVertical="true"
+            android:textSize="16sp"
+            android:padding="5dp"/>
+    </android.support.v7.widget.CardView>
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:clickable="true"
+        android:background="?attr/selectableItemBackground">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="随身健康知识宝典"
+            android:drawableRight="@drawable/ic_next_right_grey_24dp"
+            android:gravity="center_vertical"
+            android:layout_centerVertical="true"
+            android:textSize="16sp"
+            android:padding="5dp"/>
+    </android.support.v7.widget.CardView>
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:clickable="true"
+        android:background="?attr/selectableItemBackground">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="关注官方微信"
+            android:drawableRight="@drawable/ic_next_right_grey_24dp"
+            android:gravity="center_vertical"
+            android:layout_centerVertical="true"
+            android:textSize="16sp"
+            android:padding="5dp"/>
+    </android.support.v7.widget.CardView>
 </LinearLayout>

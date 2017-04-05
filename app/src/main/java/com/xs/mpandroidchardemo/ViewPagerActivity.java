@@ -36,6 +36,7 @@ public class ViewPagerActivity extends AppCompatActivity implements ViewPager.On
         initView();
         viewPager.setAdapter(new MyFragmentPagerAdapter(getSupportFragmentManager()));
         viewPager.setOnPageChangeListener(this);
+        viewPager.setOffscreenPageLimit(3);
     }
 
     private void initView() {

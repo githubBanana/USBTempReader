@@ -15,11 +15,6 @@ import com.xs.mpandroidchardemo.R;
  */
 public class MainFragment extends Fragment {
 
-/*
-    public static MainFragment newInstance(Context context) {
-        Bundle bundle = new Bundle();
-        return (MainFragment) Fragment.instantiate(, TopicCommentFragment.class.getName(), bundle);
-    }*/
 
     @Nullable
     @Override
