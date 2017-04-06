@@ -1,4 +1,4 @@
-package com.xs.mpandroidchardemo;
+package com.xs.mpandroidchardemo.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -12,6 +12,36 @@ import java.util.TimeZone;
 public class TimeHelper {
 
     //Date date1=new Date(2015-1900,11,30,23,59,59);
+
+    /**
+     * 格式：当前时间（yyyy-MM-dd HH:mm:ss）
+     */
+    private final static ThreadLocal<SimpleDateFormat> dateFormatDetailCurrentTime = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
+        }
+    };
+    private final static ThreadLocal<SimpleDateFormat> todayFormat = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("yyyy-MM-dd",Locale.CHINA);
+        }
+    };
+
+    /**
+     * 获取当前详细时间
+     * @return
+     */
+    public static String getDetailCurrDate() {
+        Date date = new Date(System.currentTimeMillis());
+        return dateFormatDetailCurrentTime.get().format(date);
+    }
+
+    public static String getToday() {
+        Date date = new Date(System.currentTimeMillis());
+        return todayFormat.get().format(date);
+    }
 
     /**
      *

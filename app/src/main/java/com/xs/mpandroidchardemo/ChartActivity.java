@@ -1,8 +1,12 @@
 package com.xs.mpandroidchardemo;
 
+import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.IntegerRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,8 +21,12 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.Utils;
+import com.xs.mpandroidchardemo.entity.AppDatabaseCache;
+import com.xs.mpandroidchardemo.entity.RecordBean;
+import com.xs.mpandroidchardemo.utils.TimeHelper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -30,6 +38,15 @@ public class ChartActivity extends AppCompatActivity {
     @Bind(R.id.iv_back)
     ImageView ivBack;
 
+    private static final String DAY = "day";
+
+    public static void start(Activity activity,String day) {
+        Intent intent = new Intent();
+        intent.putExtra(DAY,day);
+        intent.setComponent(new ComponentName(activity,ChartActivity.class));
+        activity.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +54,9 @@ public class ChartActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         initLineChart();
 
-        new MyThread().start();
+        String day = getIntent().getStringExtra(DAY);
+        List<RecordBean> list = AppDatabaseCache.getcache(this).queryRecordByTime(day);
+        new MyThread(list).start();
 
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,31 +160,32 @@ public class ChartActivity extends AppCompatActivity {
 
     class MyThread extends Thread {
 
-        ArrayList<Entry> values = new ArrayList<>();
-        float initF = 37.0f;
+        private List<RecordBean> recordBeanList;
+        public MyThread(List<RecordBean> recordBeanList) {
+            this.recordBeanList = recordBeanList;
+        }
+
+        ArrayList<Entry> values ;
         boolean isFirstSetData = true;
         @Override
         public void run() {
-
-            while (true) {
-                try {
-                    int position = TimeHelper.getBetweenMinutes();
-                    values.add(new Entry(position, initF));
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            setData(values);
-                            if (isFirstSetData) {
-                                test(TimeHelper.getBetweenMinutes());
-                                isFirstSetData = false;
-                            }
-                        }
-                    });
-                    Thread.sleep(2000 * 60);
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            if (recordBeanList == null || recordBeanList.size() == 0) {
+            } else {
+                values = new ArrayList<>();
+                for (RecordBean rb :
+                        recordBeanList) {
+                    values.add(new Entry(rb.getMin(),rb.getValue()));
                 }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setData(values);
+                        if (isFirstSetData) {
+                            test(recordBeanList.get(0).getMin());
+                            isFirstSetData = false;
+                        }
+                    }
+                });
             }
         }
     }
@@ -173,7 +193,7 @@ public class ChartActivity extends AppCompatActivity {
 
     private void test(int min) {
         mChart.getViewPortHandler().getMatrixTouch().postTranslate(-mChart.getWidth() / 6.6f / 2 * min,1);
-//         x轴执行动画
+//         Y轴执行动画
         mChart.animateY(1000);
         mChart.invalidate();
     }

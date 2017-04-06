@@ -9,13 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.github.mikephil.charting.formatter.IFillFormatter;
+import com.github.mikephil.charting.charts.Chart;
 import com.kennyc.view.MultiStateView;
 import com.xs.mpandroidchardemo.ChartActivity;
 import com.xs.mpandroidchardemo.R;
 import com.xs.mpandroidchardemo.adapter.RecordAdapter;
+import com.xs.mpandroidchardemo.entity.AppDatabaseCache;
 import com.xs.mpandroidchardemo.entity.RecordBean;
 import com.yanzhenjie.recyclerview.swipe.Closeable;
 import com.yanzhenjie.recyclerview.swipe.OnSwipeMenuItemClickListener;
@@ -23,14 +23,17 @@ import com.yanzhenjie.recyclerview.swipe.SwipeMenu;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuCreator;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuItem;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
-import com.yanzhenjie.recyclerview.swipe.touch.OnItemMoveListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.Subscribe;
 
 /**
  * Created by Administrator on 2017/4/4.
@@ -45,6 +48,7 @@ public class RecordFragment extends Fragment {
     TextView tvDay;
 
     private RecordAdapter recordAdapter;
+    private List<RecordBean> recordBeanList;
 
     @Nullable
     @Override
@@ -56,7 +60,8 @@ public class RecordFragment extends Fragment {
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this,view);
-        String day = Calendar.getInstance().DATE+"";
+        EventBus.getDefault().register(this);
+        String day = Calendar.getInstance().get(Calendar.DATE)+"";
         tvDay.setText(day.length() == 1 ? "0"+day : day);
         recyclerView.setSwipeMenuCreator(new SwipeMenuCreator() {
             @Override
@@ -74,6 +79,8 @@ public class RecordFragment extends Fragment {
         recyclerView.setSwipeMenuItemClickListener(new OnSwipeMenuItemClickListener() {
             @Override
             public void onItemClick(Closeable closeable, int adapterPosition, int menuPosition, int direction) {
+                AppDatabaseCache.getcache(getContext()).deleteRecord(recordAdapter.getItem(adapterPosition));
+                recordBeanList = AppDatabaseCache.getcache(getContext()).queryAllRecord();
                 recordAdapter.remove(adapterPosition);
             }
         });
@@ -81,24 +88,63 @@ public class RecordFragment extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setItemViewSwipeEnabled(false); // 开启滑动删除
-        List<RecordBean> list = new ArrayList<>();
-
-        for (int i = 0; i < 10; i++) {
-            RecordBean bean = new RecordBean();
-            bean.setTime("1232-22-11"+i);
-            list.add(bean);
-        }
         recordAdapter = new RecordAdapter(getContext());
         recyclerView.setAdapter(recordAdapter);
-        recordAdapter.setData(list);
         recordAdapter.setOnItemClickListener(new RecordAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(RecordBean item, int position) {
-                Intent intent = new Intent(getActivity(), ChartActivity.class);
-                getActivity().startActivity(intent);
+            public void onItemClick(String item, int position) {
+                ChartActivity.start(getActivity(),item);
             }
         });
 
-//        multiStateView.setViewState(MultiStateView.VIEW_STATE_EMPTY);
+       queryData();
+    }
+
+    private void queryData() {
+        new Thread(){
+            @Override
+            public void run() {
+                recordBeanList = AppDatabaseCache.getcache(getContext()).queryAllRecord();
+                if (recordBeanList == null || recordBeanList.size() == 0) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            multiStateView.setViewState(MultiStateView.VIEW_STATE_EMPTY);
+                        }
+                    });
+                } else {
+                    HashSet<String> hashSet = new HashSet();
+                    for (RecordBean rb:
+                            recordBeanList) {
+                        hashSet.add(rb.getTime());
+                    }
+                    Iterator<String> iterator = hashSet.iterator();
+                    final List<String> recordBeanTemp = new ArrayList<>();
+                    while (iterator.hasNext()) {
+                        recordBeanTemp.add(iterator.next());
+                    }
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            recordAdapter.setData(recordBeanTemp);
+                            multiStateView.setViewState(MultiStateView.VIEW_STATE_CONTENT);
+                        }
+                    });
+                }
+            }
+        }.start();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe
+    public void onEvent(RecordBean recordBean) {
+        if (recordBeanList == null || recordBeanList.size() == 0) {
+            queryData();
+        }
     }
 }

@@ -84,6 +84,7 @@
             android:src="@mipmap/ic_phone"
             />
         <TextView
+            android:id="@+id/tv_status_conn"
             android:layout_below="@+id/view_line"
             android:layout_toLeftOf="@+id/ic_phone"
             android:layout_marginRight="30dp"
@@ -109,5 +110,25 @@
             android:id="@+id/pointer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@+id/tv_value"
+            android:layout_marginBottom="20dp"
+            android:background="@mipmap/ic_time_bg"
+            android:gravity="center"
+            />
+        <TextView
+            android:id="@+id/tv_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="85dp"
+            android:textColor="@color/colorBlue"
+            android:textSize="28sp"
+            />
     </RelativeLayout>
 </LinearLayout>

@@ -11,9 +11,13 @@ import android.widget.LinearLayout;
 
 import com.kyleduo.switchbutton.SwitchButton;
 import com.xs.mpandroidchardemo.R;
+import com.xs.mpandroidchardemo.event.NotifyEvent;
+import com.xs.mpandroidchardemo.utils.SharePreferenceUtil;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.Subscribe;
 
 /**
  * Created by Administrator on 2017/4/4.
@@ -39,28 +43,79 @@ public class SettingFragment extends Fragment implements CompoundButton.OnChecke
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this,view);
+        EventBus.getDefault().register(this);
         linearLayoutTip.setVisibility(View.GONE);
         unitSwitchBtn.setOnCheckedChangeListener(this);
         tipSwitchBtn.setOnCheckedChangeListener(this);
         connSwitchBtn.setOnCheckedChangeListener(this);
+        initView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    private void initView() {
+      /*  boolean isConn = SharePreferenceUtil.getBoolean(getContext(),"isConn");
+        if (isConn) {
+            connSwitchBtn.setChecked(true);
+        } else {
+            connSwitchBtn.setChecked(false);
+        }*/
+
+        int unit = SharePreferenceUtil.getInt(getContext(),"unit");
+        if (unit == 0) {
+            unitSwitchBtn.setChecked(true);
+        } else {
+            unitSwitchBtn.setChecked(false);
+        }
+
+        boolean isAlert = SharePreferenceUtil.getBoolean(getContext(),"isAlert");
+        if (isAlert) {
+            tipSwitchBtn.setChecked(true);
+        } else {
+            tipSwitchBtn.setChecked(false);
+        }
+
     }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
             case R.id.sb_unit:
-
+                if (isChecked)
+                    SharePreferenceUtil.setValue(getContext(),"unit",0);//摄氏度
+                else
+                    SharePreferenceUtil.setValue(getContext(),"unit",1);//华氏度
                 break;
             case R.id.sb_conn:
-
+                if (isChecked)
+                    SharePreferenceUtil.setValue(getContext(),"isConn",true);
+                else
+                    SharePreferenceUtil.setValue(getContext(),"isConn",false);
                 break;
             case R.id.sb_tip:
-                if (isChecked)
+                if (isChecked) {
                     linearLayoutTip.setVisibility(View.VISIBLE);
-                else
+                    SharePreferenceUtil.setValue(getContext(),"isAlert",true);
+                } else {
+                    SharePreferenceUtil.setValue(getContext(),"isAlert",false);
                     linearLayoutTip.setVisibility(View.GONE);
+                }
                 break;
             default:break;
+        }
+    }
+
+    @Subscribe
+    public void onEvent(String status) {
+        if (NotifyEvent.STATUS_CONN.equals(status)) {
+            connSwitchBtn.setChecked(true);
+
+        } else if (NotifyEvent.STATUS_DISCONN.equals(status)) {
+            connSwitchBtn.setChecked(false);
         }
     }
 }

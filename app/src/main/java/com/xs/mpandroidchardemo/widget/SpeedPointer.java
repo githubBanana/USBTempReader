@@ -28,7 +28,8 @@ public class SpeedPointer extends View implements Runnable {
     private float dAngleValue;//角度值总变化量
     private float previewValue;//前一次的温度值
     private static boolean isNotContinueThread = false;
-    private String realTimeTempValue;
+    private String realTimeTempValue = "";
+    private String realTime = "";
 
     public SpeedPointer(Context context) {
         super(context);
@@ -46,12 +47,10 @@ public class SpeedPointer extends View implements Runnable {
         timeTextPaint = new Paint();
         timeTextPaint.setColor(getResources().getColor(android.R.color.darker_gray));
         timeTextPaint.setStrokeWidth(10f);
-        timeTextPaint.setTextSize(50f);
 
         tempTextPaint = new Paint();
         tempTextPaint.setColor(0xff9dd9d7);
         tempTextPaint.setStrokeWidth(20f);
-        tempTextPaint.setTextSize(80f);
 
         pointPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         pointPaint.setAntiAlias(true);
@@ -79,15 +78,23 @@ public class SpeedPointer extends View implements Runnable {
         postView();
     }
 
+    private void setTime(String time) {
+        this.realTime = time;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         fatherViewWidth = getWidth();
         fatherViewHeight = getHeight();
+        tempTextPaint.setTextSize(fatherViewWidth * 0.12f);
+        timeTextPaint.setTextSize(fatherViewWidth * 0.06f);
+
         canvas.rotate(dAngleValue,fatherViewWidth / 2,fatherViewHeight / 2);
         canvas.drawBitmap(wheel, fatherViewWidth * 0.188f, fatherViewHeight * 0.14f, pointPaint);
-        canvas.drawText("2102-22-33 11:22",fatherViewWidth / 2 * 0.6f,fatherViewHeight / 2 * 0.8f,timeTextPaint);
-        canvas.drawText("33.3℃",fatherViewWidth / 2 * 0.8f,fatherViewHeight / 2 * 1.1f,tempTextPaint);
+
+//        canvas.drawText(realTime,fatherViewWidth / 2 * 0.55f,fatherViewHeight / 2 * 0.8f,timeTextPaint);
+//        canvas.drawText(realTimeTempValue,fatherViewWidth / 2 * 0.745f,fatherViewHeight / 2 * 1.1f,tempTextPaint);
     }
 
     @Override

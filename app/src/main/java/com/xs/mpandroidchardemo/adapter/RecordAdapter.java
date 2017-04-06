@@ -23,7 +23,7 @@ import java.util.List;
 
 public class RecordAdapter extends SwipeMenuAdapter<RecyclerView.ViewHolder> {
 
-    private List<RecordBean> list;
+    private List<String> list;
     private Context context;
 
     public RecordAdapter(Context context) {
@@ -54,7 +54,7 @@ public class RecordAdapter extends SwipeMenuAdapter<RecyclerView.ViewHolder> {
         return list.size();
     }
 
-    public RecordBean getItem(int position) {
+    public String getItem(int position) {
         return list.get(position);
     }
 
@@ -70,8 +70,8 @@ public class RecordAdapter extends SwipeMenuAdapter<RecyclerView.ViewHolder> {
 
         }
 
-        public void setData(final RecordBean item, final int position) {
-            tvTime.setText(item.getTime());
+        public void setData(final String item, final int position) {
+            tvTime.setText(item);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -89,7 +89,7 @@ public class RecordAdapter extends SwipeMenuAdapter<RecyclerView.ViewHolder> {
         notifyItemRemoved(position);
     }
 
-    public void setData(Collection<RecordBean> items) {
+    public void setData(Collection<String> items) {
         list.clear();
         list.addAll(items);
         notifyDataSetChanged();
@@ -100,6 +100,6 @@ public class RecordAdapter extends SwipeMenuAdapter<RecyclerView.ViewHolder> {
         this.listener = listener;
     }
     public interface OnItemClickListener {
-        void onItemClick(RecordBean item,int position);
+        void onItemClick(String item,int position);
     }
 }
