@@ -23,6 +23,9 @@ import android.widget.Toast;
 import com.xs.mpandroidchardemo.adapter.MyFragmentPagerAdapter;
 import com.xs.mpandroidchardemo.entity.RecordBean;
 import com.xs.mpandroidchardemo.event.NotifyEvent;
+import com.xs.mpandroidchardemo.manager.AlertManager;
+import com.xs.mpandroidchardemo.utils.Constant;
+import com.xs.mpandroidchardemo.utils.SharePreferenceUtil;
 import com.xs.mpandroidchardemo.utils.TimeHelper;
 
 import java.util.ArrayList;
@@ -84,10 +87,42 @@ public class ViewPagerActivity extends AppCompatActivity implements ViewPager.On
         viewPager.setOnPageChangeListener(this);
         viewPager.setOffscreenPageLimit(3);
         initUsbData();
-        sendToUsb();
+        firstSendToUsb();
         readFromUsb();
     }
 
+    private void firstSendToUsb() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int ret = -1;
+                // 发送准备命令
+                byte[] bytes=new byte[]{0x21,0x09,0x00,0x02,0x00,0x00,0x08,0x00};
+                receiveytes=new byte[64];
+                while (true){
+                    SystemClock.sleep(500);
+                    if (isBack || mDeviceConnection == null){
+                        return;
+                    }
+                    int i = mDeviceConnection.controlTransfer(33, 9, 0, 0, bytes, bytes.length, 1000);
+                    ret = mDeviceConnection.bulkTransfer(usbEpIn, receiveytes, receiveytes.length, 200);
+                    if (i!=-1 || ret!=-1){
+                        Message message=Message.obtain();
+                        message.what=1;
+                        message.obj=receiveytes;
+                        handler.sendMessage(message);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                sendToUsb();
+                            }
+                        });
+                        break;
+                    }
+                }
+            }
+        }).start();
+    }
     private void sendToUsb() {
 
         new Thread(new Runnable() {
@@ -139,7 +174,15 @@ public class ViewPagerActivity extends AppCompatActivity implements ViewPager.On
                     byte b = buffer[3];
                     Log.e("HHH", "run 读取的状态 " + b + "--------------------------" + Arrays.toString(buffer));
                     if (b==1){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(ViewPagerActivity.this,"APP 正在运行中",Toast.LENGTH_LONG).show();
+                            }
+                        });
                     } else if (b==2){
+                        EventBus.getDefault().post(NotifyEvent.FNIISH_APP);
+                        handler.sendEmptyMessage(44);
                     }
                     SystemClock.sleep(500);
                 }
@@ -168,10 +211,19 @@ public class ViewPagerActivity extends AppCompatActivity implements ViewPager.On
                     recordBean.setTime(TimeHelper.getToday());
                     recordBean.setMin(TimeHelper.getBetweenMinutes());
                     EventBus.getDefault().post(recordBean);
+                    if (SharePreferenceUtil.getBoolean(ViewPagerActivity.this,Constant.IS_ALERT)) {
+                        if (tem >= Constant.HIGH)
+                            AlertManager.getInstance(ViewPagerActivity.this).start();
+                        else
+                            AlertManager.getInstance(ViewPagerActivity.this).stop();
+                    }
                     break;
 
                 case -1:
 //                    mText.setText("关闭");
+                    break;
+                case 44:
+                    finish();
                     break;
             }
         }
@@ -181,6 +233,7 @@ public class ViewPagerActivity extends AppCompatActivity implements ViewPager.On
     protected void onDestroy() {
         super.onDestroy();
         isBack = true;
+        AlertManager.getInstance(this).stop();
     }
 
     private void initView() {

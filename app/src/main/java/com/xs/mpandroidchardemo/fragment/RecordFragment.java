@@ -1,6 +1,5 @@
 package com.xs.mpandroidchardemo.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,12 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.github.mikephil.charting.charts.Chart;
 import com.kennyc.view.MultiStateView;
 import com.xs.mpandroidchardemo.ChartActivity;
 import com.xs.mpandroidchardemo.R;
 import com.xs.mpandroidchardemo.adapter.RecordAdapter;
-import com.xs.mpandroidchardemo.entity.AppDatabaseCache;
+import com.xs.mpandroidchardemo.manager.db.AppDatabaseCache;
 import com.xs.mpandroidchardemo.entity.RecordBean;
 import com.yanzhenjie.recyclerview.swipe.Closeable;
 import com.yanzhenjie.recyclerview.swipe.OnSwipeMenuItemClickListener;

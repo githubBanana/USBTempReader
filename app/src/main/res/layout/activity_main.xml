@@ -43,7 +43,6 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
-            android:onClick="myTouch"
             android:text="温度"
             android:textSize="12sp" />
 

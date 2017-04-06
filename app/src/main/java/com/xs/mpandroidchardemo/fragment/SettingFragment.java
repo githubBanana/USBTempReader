@@ -11,7 +11,11 @@ import android.widget.LinearLayout;
 
 import com.kyleduo.switchbutton.SwitchButton;
 import com.xs.mpandroidchardemo.R;
+import com.xs.mpandroidchardemo.adapter.RecordAdapter;
+import com.xs.mpandroidchardemo.entity.RecordBean;
 import com.xs.mpandroidchardemo.event.NotifyEvent;
+import com.xs.mpandroidchardemo.manager.AlertManager;
+import com.xs.mpandroidchardemo.utils.Constant;
 import com.xs.mpandroidchardemo.utils.SharePreferenceUtil;
 
 import butterknife.Bind;
@@ -32,6 +36,7 @@ public class SettingFragment extends Fragment implements CompoundButton.OnChecke
     SwitchButton connSwitchBtn;
     @Bind(R.id.ll_tip)
     LinearLayout linearLayoutTip;
+    private float currentTempValue;
 
     @Nullable
     @Override
@@ -86,23 +91,28 @@ public class SettingFragment extends Fragment implements CompoundButton.OnChecke
         switch (buttonView.getId()) {
             case R.id.sb_unit:
                 if (isChecked)
-                    SharePreferenceUtil.setValue(getContext(),"unit",0);//摄氏度
+                    SharePreferenceUtil.setValue(getContext(),Constant.UNIT,0);//摄氏度
                 else
-                    SharePreferenceUtil.setValue(getContext(),"unit",1);//华氏度
+                    SharePreferenceUtil.setValue(getContext(),Constant.UNIT,1);//华氏度
                 break;
             case R.id.sb_conn:
                 if (isChecked)
-                    SharePreferenceUtil.setValue(getContext(),"isConn",true);
+                    SharePreferenceUtil.setValue(getContext(),Constant.IS_CONNN,true);
                 else
-                    SharePreferenceUtil.setValue(getContext(),"isConn",false);
+                    SharePreferenceUtil.setValue(getContext(),Constant.IS_CONNN,false);
                 break;
             case R.id.sb_tip:
                 if (isChecked) {
                     linearLayoutTip.setVisibility(View.VISIBLE);
-                    SharePreferenceUtil.setValue(getContext(),"isAlert",true);
+                    SharePreferenceUtil.setValue(getContext(),Constant.IS_ALERT,true);
+                    if (currentTempValue > Constant.HIGH) {
+                        AlertManager.getInstance(getContext()).start();
+                    }
                 } else {
-                    SharePreferenceUtil.setValue(getContext(),"isAlert",false);
+                    SharePreferenceUtil.setValue(getContext(),Constant.IS_ALERT,false);
                     linearLayoutTip.setVisibility(View.GONE);
+                    AlertManager.getInstance(getContext()).stop();
+                    currentTempValue = 0;
                 }
                 break;
             default:break;
@@ -117,5 +127,10 @@ public class SettingFragment extends Fragment implements CompoundButton.OnChecke
         } else if (NotifyEvent.STATUS_DISCONN.equals(status)) {
             connSwitchBtn.setChecked(false);
         }
+    }
+
+    @Subscribe
+    public void onEvent(RecordBean recordBean) {
+        this.currentTempValue = recordBean.getValue();
     }
 }

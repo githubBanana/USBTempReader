@@ -1,4 +1,4 @@
-package com.xs.mpandroidchardemo;
+package com.xs.mpandroidchardemo.manager.chart;
 
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
@@ -6,11 +6,11 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 /**
  * Created by Administrator on 2017/4/2.
  */
-public class YValueFormat implements IAxisValueFormatter {
+public class FYValueFormat implements IAxisValueFormatter {
 
     @Override
     public String getFormattedValue(float value, AxisBase axis) {
-        return value+"℃";
+        return value+"℉";
     }
 
     @Override

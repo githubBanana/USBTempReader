@@ -3,6 +3,8 @@ package com.xs.mpandroidchardemo.entity;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import org.w3c.dom.ProcessingInstruction;
+
 import java.io.Serializable;
 
 /**
@@ -19,6 +21,7 @@ public class RecordBean implements Serializable{
     public static final String ID = "id";//本地递增ID
     public static final String TIME = "time";
     public static final String VALUE = "value";
+    public static final String FAHRENHEIT = "fahrenheitValue";//对应华氏度值
     public static final String DMIN = "dmin";//今天走过的分钟数
 
     @DatabaseField(generatedId = true,columnName = ID)
@@ -27,6 +30,8 @@ public class RecordBean implements Serializable{
     private String time ;
     @DatabaseField(columnName = VALUE)
     private float value;
+    @DatabaseField(columnName = FAHRENHEIT)
+    private float fahrenheitValue;
     @DatabaseField(columnName = DMIN)
     private int min;
 
@@ -52,6 +57,7 @@ public class RecordBean implements Serializable{
 
     public void setValue(float value) {
         this.value = value;
+        this.fahrenheitValue = 1.8f * value + 32;
     }
 
     public int getMin() {
@@ -60,6 +66,14 @@ public class RecordBean implements Serializable{
 
     public void setMin(int min) {
         this.min = min;
+    }
+
+    public float getFahrenheitValue() {
+        return fahrenheitValue;
+    }
+
+    public void setFahrenheitValue(float fahrenheitValue) {
+        this.fahrenheitValue = fahrenheitValue;
     }
 
     @Override

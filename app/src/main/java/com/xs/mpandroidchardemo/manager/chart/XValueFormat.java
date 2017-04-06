@@ -1,4 +1,4 @@
-package com.xs.mpandroidchardemo;
+package com.xs.mpandroidchardemo.manager.chart;
 
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;

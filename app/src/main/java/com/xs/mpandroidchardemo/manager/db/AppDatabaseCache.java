@@ -1,11 +1,12 @@
-package com.xs.mpandroidchardemo.entity;
+package com.xs.mpandroidchardemo.manager.db;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.diy.dblib.util.DatabaseHelper;
 import com.diy.dblib.util.GenericDao;
 import com.diy.dblib.util.GenericDaoImpl;
+import com.xs.mpandroidchardemo.entity.RecordBean;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

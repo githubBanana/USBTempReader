@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.xs.mpandroidchardemo.R;
-import com.xs.mpandroidchardemo.entity.AppDatabaseCache;
+import com.xs.mpandroidchardemo.manager.db.AppDatabaseCache;
 import com.xs.mpandroidchardemo.entity.RecordBean;
 import com.xs.mpandroidchardemo.event.NotifyEvent;
 import com.xs.mpandroidchardemo.utils.TimeHelper;

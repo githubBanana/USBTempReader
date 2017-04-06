@@ -10,4 +10,5 @@ public class NotifyEvent {
 
     public static final String STATUS_CONN = "status_conn";//已经连接
     public static final String STATUS_DISCONN = "status_disconn";//断开连接
+    public static final String FNIISH_APP = "finish_app";//退出APP
 }

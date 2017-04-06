@@ -1,4 +1,4 @@
-package com.xs.mpandroidchardemo.entity;
+package com.xs.mpandroidchardemo.manager.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -6,6 +6,8 @@ import android.database.sqlite.SQLiteDatabase;
 import com.diy.dblib.util.DatabaseHelper;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import com.xs.mpandroidchardemo.entity.RecordBean;
+
 import java.sql.SQLException;
 
 /**
