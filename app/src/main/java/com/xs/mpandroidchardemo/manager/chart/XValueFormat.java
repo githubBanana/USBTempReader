@@ -6,7 +6,7 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import java.text.DecimalFormat;
 
 /**
- * Created by Administrator on 2017/4/4.
+ * Created by Simon on 2017/4/4.
  */
 public class XValueFormat implements IAxisValueFormatter {
 

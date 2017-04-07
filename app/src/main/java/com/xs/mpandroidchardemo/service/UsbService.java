@@ -1,4 +1,4 @@
-package com.xs.mpandroidchardemo;
+package com.xs.mpandroidchardemo.service;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -21,6 +21,7 @@ import android.widget.Button;
 
 import com.xs.mpandroidchardemo.entity.RecordBean;
 import com.xs.mpandroidchardemo.event.NotifyEvent;
+import com.xs.mpandroidchardemo.ui.activity.ViewPagerActivity;
 import com.xs.mpandroidchardemo.utils.TimeHelper;
 
 import java.util.Arrays;

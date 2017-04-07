@@ -1,4 +1,4 @@
-package com.xs.mpandroidchardemo.fragment;
+package com.xs.mpandroidchardemo.ui.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -13,7 +13,6 @@ import com.xs.mpandroidchardemo.R;
 import com.xs.mpandroidchardemo.manager.AlertManager;
 import com.xs.mpandroidchardemo.manager.db.AppDatabaseCache;
 import com.xs.mpandroidchardemo.entity.RecordBean;
-import com.xs.mpandroidchardemo.event.NotifyEvent;
 import com.xs.mpandroidchardemo.utils.Constant;
 import com.xs.mpandroidchardemo.utils.SharePreferenceUtil;
 import com.xs.mpandroidchardemo.utils.TimeHelper;
@@ -25,7 +24,7 @@ import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
 /**
- * Created by Administrator on 2017/4/4.
+ * Created by Simon on 2017/4/4.
  */
 public class MainFragment extends Fragment {
 

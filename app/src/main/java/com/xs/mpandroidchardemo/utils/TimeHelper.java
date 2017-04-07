@@ -7,7 +7,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 /**
- * Created by Administrator on 2017/4/3.
+ * Created by Simon on 2017/4/3.
  */
 public class TimeHelper {
 

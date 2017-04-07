@@ -1,7 +1,7 @@
 package com.xs.mpandroidchardemo.utils;
 
 /**
- * Created by Administrator on 2017/4/6.
+ * Created by Simon on 2017/4/6.
  */
 public class Constant {
     /*温度最高报警值*/

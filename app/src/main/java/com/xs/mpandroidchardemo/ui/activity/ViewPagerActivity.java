@@ -1,40 +1,22 @@
-package com.xs.mpandroidchardemo;
+package com.xs.mpandroidchardemo.ui.activity;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.hardware.usb.UsbConstants;
-import android.hardware.usb.UsbDevice;
-import android.hardware.usb.UsbDeviceConnection;
-import android.hardware.usb.UsbEndpoint;
-import android.hardware.usb.UsbInterface;
-import android.hardware.usb.UsbManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.KeyEvent;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.xs.mpandroidchardemo.R;
 import com.xs.mpandroidchardemo.adapter.MyFragmentPagerAdapter;
 import com.xs.mpandroidchardemo.entity.RecordBean;
 import com.xs.mpandroidchardemo.event.NotifyEvent;
 import com.xs.mpandroidchardemo.manager.AlertManager;
-import com.xs.mpandroidchardemo.utils.Constant;
-import com.xs.mpandroidchardemo.utils.SharePreferenceUtil;
-import com.xs.mpandroidchardemo.utils.TimeHelper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import butterknife.Bind;
@@ -43,7 +25,6 @@ import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-import static android.hardware.usb.UsbConstants.USB_DIR_OUT;
 
 /**
  * Created by Administrator on 2017/4/4.

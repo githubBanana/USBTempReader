@@ -1,4 +1,4 @@
-package com.xs.mpandroidchardemo.fragment;
+package com.xs.mpandroidchardemo.ui.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,7 +12,6 @@ import android.widget.LinearLayout;
 
 import com.kyleduo.switchbutton.SwitchButton;
 import com.xs.mpandroidchardemo.R;
-import com.xs.mpandroidchardemo.adapter.RecordAdapter;
 import com.xs.mpandroidchardemo.entity.RecordBean;
 import com.xs.mpandroidchardemo.event.NotifyEvent;
 import com.xs.mpandroidchardemo.manager.AlertManager;

@@ -1,4 +1,4 @@
-package com.xs.mpandroidchardemo.fragment;
+package com.xs.mpandroidchardemo.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,7 +12,7 @@ import com.xs.mpandroidchardemo.R;
 import butterknife.ButterKnife;
 
 /**
- * Created by Administrator on 2017/4/4.
+ * Created by Simon on 2017/4/4.
  */
 public class AuxiliaryFuncFragment extends Fragment{
 

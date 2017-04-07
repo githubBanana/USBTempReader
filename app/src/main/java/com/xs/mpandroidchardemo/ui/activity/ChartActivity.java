@@ -1,4 +1,4 @@
-package com.xs.mpandroidchardemo;
+package com.xs.mpandroidchardemo.ui.activity;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -20,6 +20,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.Utils;
+import com.xs.mpandroidchardemo.R;
 import com.xs.mpandroidchardemo.event.NotifyEvent;
 import com.xs.mpandroidchardemo.manager.chart.FYValueFormat;
 import com.xs.mpandroidchardemo.manager.chart.XValueFormat;
@@ -28,7 +29,6 @@ import com.xs.mpandroidchardemo.manager.db.AppDatabaseCache;
 import com.xs.mpandroidchardemo.entity.RecordBean;
 import com.xs.mpandroidchardemo.utils.Constant;
 import com.xs.mpandroidchardemo.utils.SharePreferenceUtil;
-import com.xs.mpandroidchardemo.utils.TimeHelper;
 
 import java.util.ArrayList;
 import java.util.List;

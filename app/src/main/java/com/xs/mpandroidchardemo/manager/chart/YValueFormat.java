@@ -4,7 +4,7 @@ import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 
 /**
- * Created by Administrator on 2017/4/2.
+ * Created by Simon on 2017/4/2.
  */
 public class YValueFormat implements IAxisValueFormatter {
 

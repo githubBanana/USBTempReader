@@ -1,4 +1,4 @@
-package com.xs.mpandroidchardemo.fragment;
+package com.xs.mpandroidchardemo.ui.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.kennyc.view.MultiStateView;
-import com.xs.mpandroidchardemo.ChartActivity;
+import com.xs.mpandroidchardemo.ui.activity.ChartActivity;
 import com.xs.mpandroidchardemo.R;
 import com.xs.mpandroidchardemo.adapter.RecordAdapter;
 import com.xs.mpandroidchardemo.manager.db.AppDatabaseCache;
@@ -35,7 +35,7 @@ import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
 /**
- * Created by Administrator on 2017/4/4.
+ * Created by Simon on 2017/4/4.
  */
 public class RecordFragment extends Fragment {
 

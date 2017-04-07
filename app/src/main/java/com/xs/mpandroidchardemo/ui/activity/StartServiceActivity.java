@@ -1,25 +1,23 @@
-package com.xs.mpandroidchardemo;
+package com.xs.mpandroidchardemo.ui.activity;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
 
+import com.xs.mpandroidchardemo.service.UsbService;
 import com.xs.mpandroidchardemo.event.NotifyEvent;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
 /**
- * Created by Administrator on 2017/4/4.
+ * Created by Simon on 2017/4/4.
  */
-public class SecondActivity extends AppCompatActivity {
+public class StartServiceActivity extends AppCompatActivity {
 
 
     @Override

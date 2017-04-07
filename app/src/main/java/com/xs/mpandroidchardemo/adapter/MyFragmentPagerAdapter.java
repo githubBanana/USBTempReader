@@ -6,13 +6,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.xs.mpandroidchardemo.entity.RecordBean;
-import com.xs.mpandroidchardemo.fragment.AuxiliaryFuncFragment;
-import com.xs.mpandroidchardemo.fragment.MainFragment;
-import com.xs.mpandroidchardemo.fragment.RecordFragment;
-import com.xs.mpandroidchardemo.fragment.SettingFragment;
+import com.xs.mpandroidchardemo.ui.fragment.AuxiliaryFuncFragment;
+import com.xs.mpandroidchardemo.ui.fragment.MainFragment;
+import com.xs.mpandroidchardemo.ui.fragment.RecordFragment;
+import com.xs.mpandroidchardemo.ui.fragment.SettingFragment;
 
 /**
- * Created by Administrator on 2017/4/4.
+ * Created by Simon on 2017/4/4.
  */
 public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
 

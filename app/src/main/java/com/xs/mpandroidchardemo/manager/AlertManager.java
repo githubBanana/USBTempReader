@@ -9,7 +9,7 @@ import android.util.Log;
 import com.xs.mpandroidchardemo.R;
 
 /**
- * Created by Administrator on 2017/4/6.
+ * Created by Simon on 2017/4/6.
  */
 public class AlertManager {
 
