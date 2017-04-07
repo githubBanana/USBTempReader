@@ -7,8 +7,12 @@
         <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
-
-    <style name="AppTheme.NoActionBar">
+    <!--parent="@android:style/Theme.NoDisplay"-->
+    <style name="AppTheme.NoActionBarNoDisplay" parent="@android:style/Theme.NoDisplay">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="AppTheme.NoActionBarDisplay">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>

@@ -1,6 +1,9 @@
 package com.xs.mpandroidchardemo;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.hardware.usb.UsbConstants;
 import android.hardware.usb.UsbDevice;
@@ -16,6 +19,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -83,6 +88,12 @@ public class ViewPagerActivity extends AppCompatActivity implements ViewPager.On
         setContentView(R.layout.activity_viewpager);
         ButterKnife.bind(this);
         initView();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+        filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+        registerReceiver(mUsbReceiver, filter);
+
         viewPager.setAdapter(new MyFragmentPagerAdapter(getSupportFragmentManager()));
         viewPager.setOnPageChangeListener(this);
         viewPager.setOffscreenPageLimit(3);
@@ -177,10 +188,20 @@ public class ViewPagerActivity extends AppCompatActivity implements ViewPager.On
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(ViewPagerActivity.this,"APP 正在运行中",Toast.LENGTH_LONG).show();
+//                                Toast.makeText(ViewPagerActivity.this,"按下按键！启动app",Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(ViewPagerActivity.this,ViewPagerActivity.class);
+                                startActivity(intent);
                             }
                         });
                     } else if (b==2){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+//                                Toast.makeText(ViewPagerActivity.this,"松开按键！退出app",Toast.LENGTH_LONG).show();
+                                EventBus.getDefault().post(NotifyEvent.FNIISH_APP);
+                                handler.sendEmptyMessage(44);
+                            }
+                        });
                         EventBus.getDefault().post(NotifyEvent.FNIISH_APP);
                         handler.sendEmptyMessage(44);
                     }
@@ -234,6 +255,7 @@ public class ViewPagerActivity extends AppCompatActivity implements ViewPager.On
         super.onDestroy();
         isBack = true;
         AlertManager.getInstance(this).stop();
+        unregisterReceiver(mUsbReceiver);
     }
 
     private void initView() {
@@ -372,4 +394,50 @@ public class ViewPagerActivity extends AppCompatActivity implements ViewPager.On
     private void showTmsg(String msg) {
 //        Toast.makeText(this,msg,Toast.LENGTH_LONG).show();
     }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Log.e("info", "onNewIntent: " );
+    }
+
+    private long _exitTime = 0;
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event)
+    {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK &&  event.getAction()==KeyEvent.ACTION_DOWN){
+            if ((System.currentTimeMillis() - _exitTime) > 2000) {
+                Toast.makeText(getApplicationContext(),"再按一次返回手机主界面", Toast.LENGTH_SHORT).show();
+                _exitTime = System.currentTimeMillis();
+            } else {
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_HOME);
+                startActivity(intent);
+            }
+            return false;
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
+    private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            UsbDevice usbDevice = (UsbDevice) intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+            String deviceName = usbDevice.getDeviceName();
+            if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
+            } else if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        EventBus.getDefault().post(NotifyEvent.FNIISH_APP);
+                        finish();
+                    }
+                });
+            }
+        }
+    };
+
 }
