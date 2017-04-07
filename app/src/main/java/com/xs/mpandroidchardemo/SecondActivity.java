@@ -29,10 +29,8 @@ public class SecondActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         moveTaskToBack(true);
-//        setContentView(R.layout.activity_second);
         EventBus.getDefault().register(this);
         startService(new Intent(this,UsbService.class));
-
     }
 
     @Override
@@ -47,12 +45,11 @@ public class SecondActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().register(this);
+        EventBus.getDefault().unregister(this);
     }
 
     @Subscribe
     public void OnEvent(String finish) {
-            Toast.makeText(this,finish,Toast.LENGTH_LONG).show();
         if (NotifyEvent.FNIISH_APP.equals(finish)) {
             finish();
         }

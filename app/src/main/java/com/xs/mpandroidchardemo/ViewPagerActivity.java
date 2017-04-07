@@ -20,11 +20,9 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import com.xs.mpandroidchardemo.adapter.MyFragmentPagerAdapter;
 import com.xs.mpandroidchardemo.entity.RecordBean;
 import com.xs.mpandroidchardemo.event.NotifyEvent;
@@ -42,7 +40,9 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
+import de.greenrobot.event.Subscribe;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.hardware.usb.UsbConstants.USB_DIR_OUT;
 
 /**
@@ -58,204 +58,43 @@ public class ViewPagerActivity extends AppCompatActivity implements ViewPager.On
     @Bind(R.id.iv_4)                ImageView           mImg4;
     private List<ImageView> _ivs = new ArrayList<>();
 
-    //设备列表
-    private HashMap<String, UsbDevice> deviceList;
-    //从设备读数据
-    private Button read_btn;
-    //给设备写数据（发指令）
-    private Button write_btn;
-    //USB管理器:负责管理USB设备的类
-    private UsbManager manager;
-    //找到的USB设备
-    private UsbDevice mUsbDevice;
-    //代表USB设备的一个接口
-    private UsbInterface mInterface;
-    private UsbDeviceConnection mDeviceConnection;
-    //代表一个接口的某个节点的类:写数据节点
-    private UsbEndpoint usbEpOut;
-    //代表一个接口的某个节点的类:读数据节点
-    private UsbEndpoint usbEpIn;
-    //要发送信息字节
-    private byte[] sendbytes;
-    //接收到的信息字节
-    private byte[] receiveytes;
-    private boolean isBack = false;
+    private static final String REALTIME_VALUE = "realtime_value";//实时温度数据
+    private static final String BUNDLE_REATIME_VALUE = "bundle_realtime_value";
 
+    public static void start(Context context,RecordBean recordBean) {
+        Intent intent = new Intent(context,ViewPagerActivity.class);
+        intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(REALTIME_VALUE,recordBean);
+        intent.putExtra(BUNDLE_REATIME_VALUE,bundle);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_viewpager);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
         initView();
 
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-        filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-        registerReceiver(mUsbReceiver, filter);
-
-        viewPager.setAdapter(new MyFragmentPagerAdapter(getSupportFragmentManager()));
-        viewPager.setOnPageChangeListener(this);
-        viewPager.setOffscreenPageLimit(3);
-        initUsbData();
-        firstSendToUsb();
-        readFromUsb();
-    }
-
-    private void firstSendToUsb() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                int ret = -1;
-                // 发送准备命令
-                byte[] bytes=new byte[]{0x21,0x09,0x00,0x02,0x00,0x00,0x08,0x00};
-                receiveytes=new byte[64];
-                while (true){
-                    SystemClock.sleep(500);
-                    if (isBack || mDeviceConnection == null){
-                        return;
-                    }
-                    int i = mDeviceConnection.controlTransfer(33, 9, 0, 0, bytes, bytes.length, 1000);
-                    ret = mDeviceConnection.bulkTransfer(usbEpIn, receiveytes, receiveytes.length, 200);
-                    if (i!=-1 || ret!=-1){
-                        Message message=Message.obtain();
-                        message.what=1;
-                        message.obj=receiveytes;
-                        handler.sendMessage(message);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                sendToUsb();
-                            }
-                        });
-                        break;
-                    }
-                }
-            }
-        }).start();
-    }
-    private void sendToUsb() {
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                SystemClock.sleep(1000);
-                int ret = -1;
-                // 发送准备命令
-                byte[] bytes=new byte[]{0x21,0x09,0x00,0x02,0x00,0x00,0x08,0x00};
-                int e=0;
-                while (true){
-                    if (isBack || mDeviceConnection == null){
-                        return;
-                    }
-                    if (true){//sp.getBoolean("dahai",false)
-                        Log.e("HHH", "run: " + "有数据" );
-                        int i = mDeviceConnection.controlTransfer(33, 9, 0, 0, bytes, bytes.length, 1000);
-                        receiveytes=new byte[64];
-                        ret = mDeviceConnection.bulkTransfer(usbEpIn, receiveytes, receiveytes.length, 200);
-                        if (i!=-1 || ret!=-1){
-                            Message message=Message.obtain();
-                            message.what=1;
-                            message.obj=receiveytes;
-                            handler.sendMessage(message);
-                        }
-                    } else {
-                        Log.e("HHH", "run: " + "完了" );
-                        handler.sendEmptyMessage(0);
-                    }
-                    SystemClock.sleep(1000 * 60 * 2);
-                }
-            }
-        }).start();
-    }
-
-    private void readFromUsb() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                //读取数据2
-                while (true){
-                    if (usbEpIn==null){
-                        continue;
-                    }
-                    int inMax = usbEpIn.getMaxPacketSize();
-                    byte[] buffer =new byte[inMax];
-                    int ret = mDeviceConnection.bulkTransfer(usbEpIn, buffer, buffer.length, 300);
-                    byte b = buffer[3];
-                    Log.e("HHH", "run 读取的状态 " + b + "--------------------------" + Arrays.toString(buffer));
-                    if (b==1){
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-//                                Toast.makeText(ViewPagerActivity.this,"按下按键！启动app",Toast.LENGTH_LONG).show();
-                                Intent intent = new Intent(ViewPagerActivity.this,ViewPagerActivity.class);
-                                startActivity(intent);
-                            }
-                        });
-                    } else if (b==2){
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-//                                Toast.makeText(ViewPagerActivity.this,"松开按键！退出app",Toast.LENGTH_LONG).show();
-                                EventBus.getDefault().post(NotifyEvent.FNIISH_APP);
-                                handler.sendEmptyMessage(44);
-                            }
-                        });
-                        EventBus.getDefault().post(NotifyEvent.FNIISH_APP);
-                        handler.sendEmptyMessage(44);
-                    }
-                    SystemClock.sleep(500);
-                }
-            }
-        }).start();
-    }
-
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 1:
-                    EventBus.getDefault().post(NotifyEvent.STATUS_CONN);
-                    byte[] bytes = (byte[]) msg.obj;
-                    byte vTemperatureL = bytes[0];
-                    byte vTemperatureH = bytes[1];
-                    byte vCnt = bytes[2];
-                    byte vErr = bytes[3];
-
-                    float tem = (vTemperatureH * 256 + vTemperatureL + vErr) / (float)10;
-
-//                    doubles.add(tem);
-                    Log.e("HHH", "handleMessage: "+tem+"C  " + Arrays.toString(bytes));
-                    RecordBean recordBean = new RecordBean();
-                    recordBean.setValue(tem);
-                    recordBean.setTime(TimeHelper.getToday());
-                    recordBean.setMin(TimeHelper.getBetweenMinutes());
-                    EventBus.getDefault().post(recordBean);
-                    if (SharePreferenceUtil.getBoolean(ViewPagerActivity.this,Constant.IS_ALERT)) {
-                        if (tem >= Constant.HIGH)
-                            AlertManager.getInstance(ViewPagerActivity.this).start();
-                        else
-                            AlertManager.getInstance(ViewPagerActivity.this).stop();
-                    }
-                    break;
-
-                case -1:
-//                    mText.setText("关闭");
-                    break;
-                case 44:
-                    finish();
-                    break;
+        RecordBean recordBean = new RecordBean();
+        if (getIntent() != null) {
+            Bundle bundle = getIntent().getBundleExtra(BUNDLE_REATIME_VALUE);
+            if (bundle != null) {
+                recordBean = (RecordBean) bundle.getSerializable(REALTIME_VALUE);
             }
         }
-    };
+        viewPager.setAdapter(new MyFragmentPagerAdapter(this,getSupportFragmentManager(),recordBean));
+        viewPager.setOnPageChangeListener(this);
+        viewPager.setOffscreenPageLimit(3);
+    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        isBack = true;
         AlertManager.getInstance(this).stop();
-        unregisterReceiver(mUsbReceiver);
+        EventBus.getDefault().unregister(this);
     }
 
     private void initView() {
@@ -290,115 +129,9 @@ public class ViewPagerActivity extends AppCompatActivity implements ViewPager.On
 
     }
 
-    private void initUsbData() {
-
-        // 获取USB设备
-        manager = (UsbManager) getSystemService(Context.USB_SERVICE);
-        //获取到设备列表
-        deviceList = manager.getDeviceList();
-        boolean empty = deviceList.isEmpty();
-        if (!empty) {
-            // deviceList不为空
-            Iterator<UsbDevice> deviceIterator = deviceList.values().iterator();
-            Log.e("HHH", "initUsbData: " + deviceIterator.toString() );
-            while (deviceIterator.hasNext()) {
-                UsbDevice device = deviceIterator.next();
-                // 输出设备信息
-                Log.e("HHH", "DeviceInfo: " + device.getVendorId() + " , "
-                        + device.getProductId());
-                System.out.println("DeviceInfo:" + device.getVendorId()
-                        + " , " + device.getProductId());
-                // 保存设备VID和PID
-                int vendorId = device.getVendorId();
-                int productId = device.getProductId();
-
-
-                showTmsg(vendorId+"不为空");
-                // 保存匹配到的设备
-                if (vendorId == 4760 && productId == 561) {
-                    mUsbDevice = device; // 获取USBDevice
-                    System.out.println("发现待匹配设备:" + device.getVendorId()
-                            + "," + device.getProductId());
-                    Context context = getApplicationContext();
-                    showTmsg("发现待匹配设备");
-                }
-            }
-        } else {
-            showTmsg("空");
-        }
-
-        // }
-        //获取设备接口
-        if (mUsbDevice==null) {
-            showTmsg("usb不存在");
-            return;
-        }
-        for (int i = 0; i < mUsbDevice.getInterfaceCount(); i++) {
-            // 一般来说一个设备都是一个接口，你可以通过getInterfaceCount()查看接口的个数
-            // 这个接口上有两个端点，分别对应OUT 和 IN
-            UsbInterface usbInterface = mUsbDevice.getInterface(i);
-            mInterface = usbInterface;
-            break;
-        }
-        //用UsbDeviceConnection 与 UsbInterface 进行端点设置和通讯
-        int endpointCount = mInterface.getEndpointCount();
-
-
-        for (int i = 0; i < mInterface.getEndpointCount(); i++) {
-
-            UsbEndpoint ep = mInterface.getEndpoint(i);
-
-            if (ep.getType() == UsbConstants.USB_ENDPOINT_XFER_INT) {
-                if (ep.getDirection() == USB_DIR_OUT) {
-                    Log.e("HHH", "initUsbData: " + "写的" );
-                } else {
-                    Log.e("HHH", "initUsbData: " + "读的" );
-                }
-            }
-        }
-
-        Log.e("HHH", "initUsbData: " + endpointCount );
-        if (endpointCount>0){
-            if (mInterface.getEndpoint(0) != null) {
-                usbEpIn = mInterface.getEndpoint(0);
-            }
-        }
-        if (endpointCount>1){
-            if (mInterface.getEndpoint(1) != null) {
-                usbEpOut = mInterface.getEndpoint(1);
-            }
-        }
-
-        if (mInterface != null) {
-            // 判断是否有权限
-            if (manager.hasPermission(mUsbDevice)) {
-                // 打开设备，获取 UsbDeviceConnection 对象，连接设备，用于后面的通讯
-                mDeviceConnection = manager.openDevice(mUsbDevice);
-                if (mDeviceConnection == null) {
-                    return;
-                }
-                if (mDeviceConnection.claimInterface(mInterface, true)) {
-                    showTmsg("找到设备接口");
-
-                } else {
-                    mDeviceConnection.close();
-                }
-            } else {
-                showTmsg("没有权限");
-            }
-        } else {
-            showTmsg("没有找到设备接口！");
-        }
-    }
-
-    private void showTmsg(String msg) {
-//        Toast.makeText(this,msg,Toast.LENGTH_LONG).show();
-    }
-
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Log.e("info", "onNewIntent: " );
     }
 
     private long _exitTime = 0;
@@ -421,23 +154,10 @@ public class ViewPagerActivity extends AppCompatActivity implements ViewPager.On
         return super.dispatchKeyEvent(event);
     }
 
-    private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            UsbDevice usbDevice = (UsbDevice) intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
-            String deviceName = usbDevice.getDeviceName();
-            if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
-            } else if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        EventBus.getDefault().post(NotifyEvent.FNIISH_APP);
-                        finish();
-                    }
-                });
-            }
+    @Subscribe
+    public void onEvent(String finish) {
+        if (NotifyEvent.FNIISH_APP.equals(finish)) {
+            finish();
         }
-    };
-
+    }
 }

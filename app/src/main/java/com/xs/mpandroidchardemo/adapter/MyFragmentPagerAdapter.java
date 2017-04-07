@@ -1,9 +1,11 @@
 package com.xs.mpandroidchardemo.adapter;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.xs.mpandroidchardemo.entity.RecordBean;
 import com.xs.mpandroidchardemo.fragment.AuxiliaryFuncFragment;
 import com.xs.mpandroidchardemo.fragment.MainFragment;
 import com.xs.mpandroidchardemo.fragment.RecordFragment;
@@ -14,8 +16,13 @@ import com.xs.mpandroidchardemo.fragment.SettingFragment;
  */
 public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
 
-    public MyFragmentPagerAdapter(FragmentManager fm) {
+    private RecordBean recordBean;
+    private Context context;
+
+    public MyFragmentPagerAdapter(Context context,FragmentManager fm, RecordBean recordBean) {
         super(fm);
+        this.context = context;
+        this.recordBean = recordBean;
     }
 
     @Override
@@ -23,13 +30,13 @@ public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
         Fragment fragment = null;
         switch (position) {
             case 0:
-                fragment = new MainFragment();
+                fragment = MainFragment.newInstance(context,recordBean);
                 break;
             case 1:
-                fragment = new SettingFragment();
+                fragment = SettingFragment.newInstance(context,recordBean);
                 break;
             case 2:
-                fragment = new RecordFragment();
+                fragment = RecordFragment.newInstance(context,recordBean);
                 break;
             case 3:
                 fragment = new AuxiliaryFuncFragment();

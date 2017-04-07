@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Vibrator;
+import android.util.Log;
 
 import com.xs.mpandroidchardemo.R;
 

@@ -1,5 +1,6 @@
 package com.xs.mpandroidchardemo.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -38,6 +39,18 @@ public class SettingFragment extends Fragment implements CompoundButton.OnChecke
     LinearLayout linearLayoutTip;
     private float currentTempValue;
 
+    private static final String REALTIME_VALUE = "realtime_value";
+
+    public SettingFragment() {
+        // Required empty public constructor
+    }
+
+    public static SettingFragment newInstance(Context context, RecordBean recordBean) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(REALTIME_VALUE, recordBean);
+        return (SettingFragment) Fragment.instantiate(context, SettingFragment.class.getName(), bundle);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -54,6 +67,10 @@ public class SettingFragment extends Fragment implements CompoundButton.OnChecke
         tipSwitchBtn.setOnCheckedChangeListener(this);
         connSwitchBtn.setOnCheckedChangeListener(this);
         initView();
+        if (getArguments() != null) {
+            RecordBean recordBean = (RecordBean) getArguments().getSerializable(REALTIME_VALUE);
+            onEvent(recordBean);
+        }
     }
 
     @Override
@@ -131,6 +148,8 @@ public class SettingFragment extends Fragment implements CompoundButton.OnChecke
 
     @Subscribe
     public void onEvent(RecordBean recordBean) {
+        if (recordBean.getValue() == 0)
+            return;
         this.currentTempValue = recordBean.getValue();
     }
 }

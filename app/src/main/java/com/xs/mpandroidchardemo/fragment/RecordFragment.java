@@ -1,5 +1,6 @@
 package com.xs.mpandroidchardemo.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -47,6 +48,17 @@ public class RecordFragment extends Fragment {
 
     private RecordAdapter recordAdapter;
     private List<RecordBean> recordBeanList;
+    private static final String REALTIME_VALUE = "realtime_value";
+
+    public RecordFragment() {
+        // Required empty public constructor
+    }
+
+    public static RecordFragment newInstance(Context context, RecordBean recordBean) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(REALTIME_VALUE, recordBean);
+        return (RecordFragment) Fragment.instantiate(context, RecordFragment.class.getName(), bundle);
+    }
 
     @Nullable
     @Override
@@ -95,7 +107,10 @@ public class RecordFragment extends Fragment {
             }
         });
 
-       queryData();
+        if (getArguments() != null) {
+            RecordBean recordBean = (RecordBean) getArguments().getSerializable(REALTIME_VALUE);
+            onEvent(recordBean);
+        }
     }
 
     private void queryData() {
