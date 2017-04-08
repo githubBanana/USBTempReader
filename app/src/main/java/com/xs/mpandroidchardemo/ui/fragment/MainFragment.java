@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,6 +76,7 @@ public class MainFragment extends Fragment {
 
     @Subscribe
     public void onEvent(final RecordBean recordBean) {
+        Log.e("info", "onEvent: "+recordBean.toString() );
         if (recordBean.getValue() == 0)
             return;
         if (SharePreferenceUtil.getBoolean(getContext(), Constant.IS_ALERT)) {
@@ -93,6 +95,7 @@ public class MainFragment extends Fragment {
                     tvTime.setText(TimeHelper.getDetailCurrDate());
                     tvValue.setText(recordBean.getValue()+"℃");
                     tvStatus.setText("已连接");
+                    Log.e("info", "setTextrun: " );
                 }
             });
         }

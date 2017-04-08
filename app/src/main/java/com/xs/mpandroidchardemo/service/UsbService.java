@@ -140,7 +140,7 @@ public class UsbService extends Service {
                 byte[] buffer =new byte[inMax];
                 int ret = mDeviceConnection.bulkTransfer(usbEpIn, buffer, buffer.length, 300);
                 byte b = buffer[3];
-                Log.e("HHH", "run 读取的状态 " + b + "--------------------------" + Arrays.toString(buffer));
+//                Log.e("HHH", "run 读取的状态 " + b + "--------------------------" + Arrays.toString(buffer));
                 if (b==1){
                     handler.sendEmptyMessage(START_SEND_COMMAND);
                 } else if (b==2){
@@ -161,23 +161,25 @@ public class UsbService extends Service {
 
         @Override
         public void run() {
-            int ret = -1;
             // 发送准备命令
             byte[] bytes=new byte[]{0x21,0x09,0x00,0x02,0x00,0x00,0x08,0x00};
+            receiveytes=new byte[64];
             while (isRunning) {
                 if (mDeviceConnection == null){
                     return;
                 }
                 int i = mDeviceConnection.controlTransfer(33, 9, 0, 0, bytes, bytes.length, 1000);
-                receiveytes=new byte[64];
-                ret = mDeviceConnection.bulkTransfer(usbEpIn, receiveytes, receiveytes.length, 200);
-                if (i!=-1 || ret!=-1){
+                int ret = mDeviceConnection.bulkTransfer(usbEpIn, receiveytes, receiveytes.length, 200);
+                Log.e(TAG, "ret=: "+ret +" i="+i+"  "+Arrays.toString(bytes) );
+                if (ret!=-1){//i!=-1 ||
+                    Log.e(TAG, "MESSAGErun: " );
                     Message message=Message.obtain();
                     message.what=MESSAGE;
                     message.obj=receiveytes;
                     handler.sendMessage(message);
                 }
-                SystemClock.sleep(1000 * 60 * 2);
+                SystemClock.sleep(500);
+
             }
         }
     }
@@ -318,10 +320,22 @@ public class UsbService extends Service {
                         ViewPagerActivity.start(UsbService.this,recordBean);
                     }
                     break;
+                case 11:
+                    a = !a;
+                    RecordBean recordBean1 = new RecordBean();
+                    if (a)
+                    recordBean1.setValue(38);
+                    else
+                    recordBean1.setValue(39);
+                    recordBean1.setTime(TimeHelper.getToday());
+                    recordBean1.setMin(TimeHelper.getBetweenMinutes());
+                    EventBus.getDefault().post(recordBean1);
+                    break;
                 default:break;
             }
         }
     };
+    private boolean a = false;
     private void showTmsg(String msg) {
 //        Toast.makeText(this,msg,Toast.LENGTH_LONG).show();
     }
