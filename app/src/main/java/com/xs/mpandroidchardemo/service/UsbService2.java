@@ -38,7 +38,7 @@ import static android.hardware.usb.UsbConstants.USB_DIR_OUT;
  * @Date 2017/4/7 19:10
  */
 
-public class UsbService extends Service {
+public class UsbService2 extends Service {
 
     private String TAG = "lalal";
     //设备列表
@@ -64,7 +64,6 @@ public class UsbService extends Service {
     private byte[] receiveytes;
     private ReadFromUsbThread readFromUsbThread;
     private SendToUsbThread sendToUsbThread;
-    private RecordBean recordBean;
 
     @Nullable
     @Override
@@ -80,7 +79,6 @@ public class UsbService extends Service {
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
         registerReceiver(mUsbReceiver, filter);
-        recordBean = new RecordBean();
     }
 
     @Override
@@ -117,7 +115,7 @@ public class UsbService extends Service {
             String deviceName = usbDevice.getDeviceName();
             if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
             } else if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
-//                EventBus.getDefault().post(NotifyEvent.FNIISH_APP);
+                EventBus.getDefault().post(NotifyEvent.FNIISH_APP);
                 stopSelf();
             }
         }
@@ -141,23 +139,14 @@ public class UsbService extends Service {
                 int inMax = usbEpIn.getMaxPacketSize();
                 byte[] buffer =new byte[inMax];
                 int ret = mDeviceConnection.bulkTransfer(usbEpIn, buffer, buffer.length, 300);
-//                Log.e("HHH", "run 读取的状态 " + b + "--------------------------" + Arrays.toString(buffer));
                 byte b = buffer[3];
-                int c = buffer[0] & 0xff;
-                int d = buffer[1] & 0xff;
-                if (c == 187 && d == 8) {
-                    Message message = Message.obtain();
-                    message.what = MESSAGE;
-                    message.obj = buffer;
-                    handler.sendMessage(message);
-                } else {
-                    if (b==1){
-                        handler.sendEmptyMessage(START_APP_COMMAND);
-                    } else if (b==2){
-                        handler.sendEmptyMessage(STOP_APP_COMMAND);
-                    }
+//                Log.e("HHH", "run 读取的状态 " + b + "--------------------------" + Arrays.toString(buffer));
+                if (b==1){
+                    handler.sendEmptyMessage(START_SEND_COMMAND);
+                } else if (b==2){
+                    handler.sendEmptyMessage(STOP_SEND_COMMAND);
                 }
-                SystemClock.sleep(10);
+                SystemClock.sleep(500);
             }
         }
     }
@@ -296,34 +285,43 @@ public class UsbService extends Service {
         }
     }
 
-    private static final int START_APP_COMMAND = 1;
-    private static final int STOP_APP_COMMAND = 2;
+    private static final int START_SEND_COMMAND = 1;
+    private static final int STOP_SEND_COMMAND = 2;
     private static final int MESSAGE = 3;
+    private boolean isFirstSendCommand = false;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case START_APP_COMMAND:
-                    ViewPagerActivity.start(UsbService.this,recordBean);
+                case START_SEND_COMMAND:
+                    isFirstSendCommand = true;
+                    sendToUsbThread = new SendToUsbThread();
+                    sendToUsbThread.start();
                     break;
-                case STOP_APP_COMMAND:
+                case STOP_SEND_COMMAND:
+                    if (sendToUsbThread != null)
+                        sendToUsbThread.setRunning(false);
                     EventBus.getDefault().post(NotifyEvent.FNIISH_APP);
                     break;
                 case MESSAGE:
                     byte[] bytes = (byte[]) msg.obj;
-                    byte vTemperatureL = bytes[6];
-                    byte vTemperatureH = bytes[7];
-//                    byte vCnt = bytes[2];
-                    byte vErr = bytes[5];
+                    byte vTemperatureL = bytes[0];
+                    byte vTemperatureH = bytes[1];
+                    byte vCnt = bytes[2];
+                    byte vErr = bytes[3];
                     float realTempValue = (vTemperatureH * 256 + vTemperatureL + vErr) / (float)10;
                     Log.e("HHH", "handleMessage: "+realTempValue+"C  " + Arrays.toString(bytes));
-                    recordBean = new RecordBean();
+                    RecordBean recordBean = new RecordBean();
                     recordBean.setValue(realTempValue);
                     recordBean.setTime(TimeHelper.getToday());
                     recordBean.setMin(TimeHelper.getBetweenMinutes());
                     EventBus.getDefault().post(recordBean);
+                    if (isFirstSendCommand) {
+                        isFirstSendCommand = false;
+                        ViewPagerActivity.start(UsbService2.this,recordBean);
+                    }
                     break;
-                case 11://just test
+                case 11:
                     a = !a;
                     RecordBean recordBean1 = new RecordBean();
                     if (a)

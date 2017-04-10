@@ -76,12 +76,14 @@ public class RecordBean implements Serializable{
         this.fahrenheitValue = fahrenheitValue;
     }
 
+
     @Override
     public String toString() {
         return "RecordBean{" +
                 "id=" + id +
                 ", time='" + time + '\'' +
                 ", value=" + value +
+                ", fahrenheitValue=" + fahrenheitValue +
                 ", min=" + min +
                 '}';
     }
