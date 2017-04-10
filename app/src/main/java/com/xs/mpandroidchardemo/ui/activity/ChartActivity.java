@@ -29,6 +29,7 @@ import com.xs.mpandroidchardemo.manager.db.AppDatabaseCache;
 import com.xs.mpandroidchardemo.entity.RecordBean;
 import com.xs.mpandroidchardemo.utils.Constant;
 import com.xs.mpandroidchardemo.utils.SharePreferenceUtil;
+import com.xs.mpandroidchardemo.utils.TimeHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,8 @@ public class ChartActivity extends AppCompatActivity {
     ImageView ivBack;
 
     private static final String DAY = "day";
+    private String day;
+    private List<RecordBean> list;
 
     public static void start(Activity activity,String day) {
         Intent intent = new Intent();
@@ -62,8 +65,8 @@ public class ChartActivity extends AppCompatActivity {
         EventBus.getDefault().register(this);
         initLineChart();
 
-        String day = getIntent().getStringExtra(DAY);
-        List<RecordBean> list = AppDatabaseCache.getcache(this).queryRecordByTime(day);
+        day = getIntent().getStringExtra(DAY);
+        list = AppDatabaseCache.getcache(this).queryRecordByTime(day);
         new MyThread(list).start();
 
         ivBack.setOnClickListener(new View.OnClickListener() {
@@ -221,5 +224,15 @@ public class ChartActivity extends AppCompatActivity {
     public void onEvent(String finish) {
         if (NotifyEvent.FNIISH_APP.equals(finish))
             finish();
+    }
+
+    @Subscribe
+    public void onEvent(RecordBean recordBean) {
+        if (TimeHelper.getToday().equals(day)) {
+            list.add(recordBean);
+            MyThread myThread = new MyThread(list);
+            myThread.isFirstSetData = false;
+            myThread.start();
+        }
     }
 }
