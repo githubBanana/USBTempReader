@@ -35,8 +35,8 @@ public class MainFragment extends Fragment {
     TextView tvTime;
     @Bind(R.id.tv_value)
     TextView tvValue;
-    @Bind(R.id.tv_status_conn)
-    TextView tvStatus;
+    /*@Bind(R.id.tv_status_conn)
+    TextView tvStatus;*/
 
     private static final String REALTIME_VALUE = "realtime_value";
 
@@ -94,7 +94,7 @@ public class MainFragment extends Fragment {
                     speedPointer.setValue(value);
                     tvTime.setText(TimeHelper.getDetailCurrDate());
                     tvValue.setText(recordBean.getValue()+"℃");
-                    tvStatus.setText("已连接");
+//                    tvStatus.setText("已连接");
                     Log.e("info", "setTextrun: " );
                 }
             });

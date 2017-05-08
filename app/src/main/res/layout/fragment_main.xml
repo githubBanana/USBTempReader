@@ -17,22 +17,77 @@
         android:theme="@style/AppTheme.AppBarOverlay"
         app:popupTheme="@style/AppTheme.PopupOverlay">
 
-        <TextView
-            android:id="@+id/tv_main_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_gravity="center"
-            android:textColor="@android:color/white"
-            android:textSize="20sp"
-            android:drawableLeft="@drawable/ic_cached_white_24dp"
-            android:drawablePadding="5dp"
-            android:text="当前状态"
-            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/tv_main_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:drawablePadding="5dp"
+                android:text="LOGO测温仪" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:gravity="center">
+                <ImageView
+                    android:id="@+id/user1"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@mipmap/ic_head_default" />
+                <TextView
+                    android:id="@+id/tt1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
+                    android:text="用户名"/>
+            </LinearLayout>
+        </RelativeLayout>
 
     </android.support.v7.widget.Toolbar>
 
-    <RelativeLayout
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="85dp"
+            android:textSize="58sp"
+            android:layout_gravity="center"
+            android:text="33.33"
+            />
+
+        <TextView
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="实时体温"
+            />
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="3230:33:33"
+            />
+
+    </LinearLayout>
+
+  <!--  <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -92,9 +147,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="未连接"/>
-    </RelativeLayout>
+    </RelativeLayout>-->
 
     <RelativeLayout
+        android:visibility="gone"
         android:id="@+id/train_centerbgid"
         android:layout_width="250dp"
         android:layout_height="250dp"
@@ -111,17 +167,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
         <TextView
-            android:id="@+id/tv_time"
+            android:id="@+id/tv_time1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_above="@+id/tv_value"
+            android:layout_above="@+id/tv_value1"
             android:layout_marginBottom="20dp"
             android:background="@mipmap/ic_time_bg"
             android:gravity="center"
             />
         <TextView
-            android:id="@+id/tv_value"
+            android:id="@+id/tv_value1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"

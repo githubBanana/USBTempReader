@@ -6,8 +6,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.xs.mpandroidchardemo.R;
@@ -15,6 +18,7 @@ import com.xs.mpandroidchardemo.adapter.MyFragmentPagerAdapter;
 import com.xs.mpandroidchardemo.entity.RecordBean;
 import com.xs.mpandroidchardemo.event.NotifyEvent;
 import com.xs.mpandroidchardemo.manager.AlertManager;
+import com.xs.mpandroidchardemo.manager.widget.ControlViewPaper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,10 +33,14 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 /**
  * Created by Administrator on 2017/4/4.
  */
-public class ViewPagerActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
+public class ViewPagerActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener, RadioGroup.OnCheckedChangeListener {
 
     @Bind(R.id.viewPager)
-    ViewPager viewPager;
+    ControlViewPaper viewPager;
+    @Bind(R.id.rg_main)
+    RadioGroup radioGroup;
+    @Bind(R.id.rb_setting)
+    RadioButton rbSetting;
     @Bind(R.id.iv_1)                ImageView           mImg1;
     @Bind(R.id.iv_2)                ImageView           mImg2;
     @Bind(R.id.iv_3)                ImageView           mImg3;
@@ -69,6 +77,8 @@ public class ViewPagerActivity extends AppCompatActivity implements ViewPager.On
         viewPager.setAdapter(new MyFragmentPagerAdapter(this,getSupportFragmentManager(),recordBean));
         viewPager.setOnPageChangeListener(this);
         viewPager.setOffscreenPageLimit(3);
+        viewPager.setDisableScroll(true);
+        radioGroup.setOnCheckedChangeListener(this);
     }
 
     @Override
@@ -102,7 +112,7 @@ public class ViewPagerActivity extends AppCompatActivity implements ViewPager.On
 
     @Override
     public void onPageSelected(int position) {
-        setImageViewTrue(position);
+//        setImageViewTrue(position);
     }
 
     @Override
@@ -139,6 +149,27 @@ public class ViewPagerActivity extends AppCompatActivity implements ViewPager.On
     public void onEvent(String finish) {
         if (NotifyEvent.FNIISH_APP.equals(finish)) {
             finish();
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+        switch (checkedId) {
+            case R.id.rb_home:
+                viewPager.setCurrentItem(0, false);
+                break;
+            case R.id.rb_setting:
+                Log.e("info", "onCheckedChanged: " );
+                viewPager.setCurrentItem(1, false);
+                break;
+            case R.id.rb_record:
+                viewPager.setCurrentItem(2, false);
+                break;
+            case R.id.rb_auxiliaryfunc:
+                viewPager.setCurrentItem(3, false);
+                break;
+            default:
+                break;
         }
     }
 }
